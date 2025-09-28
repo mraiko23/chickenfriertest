@@ -1,0 +1,13 @@
+{
+  "name": "Plants vs Brainrots stock",
+  "short_name": "PvBR Stock",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    { "src": "/assets/sda.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/sda.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
+

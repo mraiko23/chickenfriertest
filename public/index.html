@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Plants vs Brainrots stock</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; margin:20px; }
+      .flex { display:flex; gap:20px }
+      .card { border:1px solid #ddd; padding:12px; border-radius:6px; width:45% }
+      .title { font-weight:700; margin-bottom:8px }
+      ul { margin:0; padding-left:18px }
+      .meta { color:#666; font-size:12px }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="brand">
+          <div class="logo"><img class="logo-img" src="https://raw.githubusercontent.com/mraiko23/chickenfriertest/refs/heads/main/sda.png" alt="PvBR"></div>
+          <div>
+          <div class="title">Plants vs Brainrots stock</div>
+            <div class="subtitle">Realtime seed & gear tracker</div>
+          </div>
+        </div>
+        <div class="subtitle"></div>
+      </div>
+
+      <div class="heading"><div class="icon">🌱</div><div>Seeds Stock</div></div>
+      <div class="grid" id="seed-grid"></div>
+
+      <div class="heading"><div class="icon">⚙️</div><div>Gear Stock</div></div>
+      <div class="grid" id="gear-grid"></div>
+
+      <div class="footer" id="last-updated"></div>
+    </div>
+
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/assets/sda.png" sizes="any">
+    <meta name="theme-color" content="#0b1220">
+    <link rel="preconnect" href="https://raw.githubusercontent.com">
+    <div id="toast-container" class="toast-container"></div>
+    <script>
+      function escapeHtml(s) { return s.replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" })[c]); }
+
+      function makeCard(item) {
+        const div = document.createElement('div');
+        div.className = 'card';
+        // support legacy string items
+        if (typeof item === 'string') {
+          const name = item;
+          div.innerHTML = `
+            <div class="art">🌱</div>
+            <div class="seed-name">${escapeHtml(name)}</div>
+            <div class="rarity"></div>
+            <div class="cost"><span class="price">$?</span><span class="stock-pill">--</span></div>
+          `;
+          return div;
+        }
+
+        const name = item.name || 'Unknown';
+        const rarity = item.rarity || '';
+        const stock = item.stock || '';
+        const priceUsd = item.priceUsd || '';
+        const priceRobux = item.priceRobux || '';
+        const image = item.image || '';
+
+        const imgHtml = image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" style="max-height:100%;max-width:100%;border-radius:6px;"/>` : '🌱';
+
+        div.innerHTML = `
+          <div class="art">${imgHtml}</div>
+          <div class="seed-name">${escapeHtml(name)}</div>
+          <div class="rarity">${escapeHtml(rarity)}</div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+            <div class="price">${escapeHtml(priceUsd)}</div>
+            <div class="stock-pill">${escapeHtml(stock)}</div>
+          </div>
+        `;
+        return div;
+      }
+
+      function showToast(text) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = text;
+        c.appendChild(t);
+        setTimeout(()=>{ t.remove(); }, 7000);
+      }
+
+      function render(data) {
+        const seeds = data.seeds || [];
+        const gear = data.gear || [];
+        const seedGrid = document.getElementById('seed-grid');
+        const gearGrid = document.getElementById('gear-grid');
+        seedGrid.innerHTML = '';
+        gearGrid.innerHTML = '';
+        if (!seeds.length) seedGrid.appendChild(makeCard('No seeds'));
+        seeds.forEach(s => seedGrid.appendChild(makeCard(s)));
+        if (!gear.length) gearGrid.appendChild(makeCard('No gear'));
+        gear.forEach(g => gearGrid.appendChild(makeCard(g)));
+        document.getElementById('last-updated').textContent = data.lastUpdated ? 'Last updated: ' + data.lastUpdated : '';
+
+        // no follow buttons
+      }
+
+      // SSE connection
+      let clientId = null;
+      const evt = new EventSource('/api/stream');
+      evt.addEventListener('clientId', e => {
+        try { const d = JSON.parse(e.data); clientId = d.clientId; } catch (err) {}
+      });
+      evt.addEventListener('alert', e => {
+        try { const d = JSON.parse(e.data); showToast(d.message || 'Alert'); render({ ...lastData, ...d.item ? { seeds: lastData.seeds, gear: lastData.gear } : {} }); } catch (err) { console.error(err); }
+      });
+      evt.onmessage = e => {
+        try { const data = JSON.parse(e.data); lastData = data; render(data); } catch (err) { console.error(err); }
+      };
+      evt.onerror = () => console.error('SSE error');
+
+      let lastData = { seeds: [], gear: [] };
+    </script>
+  </body>
+</html>
+

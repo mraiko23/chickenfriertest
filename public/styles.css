@@ -1,0 +1,43 @@
+:root{
+  --bg:#0f1720;
+  --card:#ffefc9;
+  --accent:#22c55e;
+  --muted:#9ca3af;
+  --glass: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#0b1220 0%, #0f1720 100%); color:#fff; margin:0; padding:20px}
+.container{max-width:1700px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;border-radius:8px;background:linear-gradient(45deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;color:#052018}
+.logo-img{width:40px;height:40px;border-radius:8px;object-fit:cover}
+/* make favicon/screenshot look crisp */
+@media (prefers-color-scheme: dark) {
+  .logo-img { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6)); }
+}
+.title{font-size:20px;font-weight:800}
+.subtitle{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:22px}
+.card{background:var(--card);color:#111;padding:20px 22px;border-radius:14px;box-shadow:0 8px 22px rgba(2,6,23,0.55);border:3px solid rgba(255,255,255,0.04);position:relative;min-height:360px}
+.card .art{height:260px;border-radius:10px;background:linear-gradient(180deg,#fff6d9,#ffe7a6);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.rarity{font-size:13px;margin-top:8px;color:#6b7280}
+.stock-pill{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:10px;background:#3f3f3f;color:#fff;font-weight:700;margin-top:6px;min-width:84px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.price{display:inline-block;padding:10px 12px;border-radius:10px;background:#10b981;color:#fff;margin-right:10px;font-weight:800;font-size:14px}
+
+@media (max-width:900px) {
+  .grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+  .card .art{height:180px}
+  .stock-pill{min-width:70px;padding:6px 10px;font-size:12px}
+  .price{padding:8px 10px;font-size:13px}
+}
+.cost{display:flex;align-items:center;justify-content:flex-start;gap:12px}
+.toast-container{position:fixed;right:18px;bottom:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#0b1220;color:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 6px 18px rgba(2,6,23,0.6);min-width:240px}
+.seed-name{font-weight:800;font-size:16px}
+.heading{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--accent);align-items:center}
+.heading .icon{width:40px;height:40px;background:var(--glass);display:inline-flex;align-items:center;justify-content:center;border-radius:10px;font-size:18px}
+.heading > div:last-child{font-weight:900;font-size:28px;color:#7ee787;text-shadow:0 2px 8px rgba(0,0,0,0.6);letter-spacing:0.6px}
+.footer{margin-top:20px;color:var(--muted);font-size:13px}
+.bg-pattern{background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><text x="0" y="40" font-size="28" fill="%231b2b34">🌱</text></svg>');opacity:0.03;position:fixed;inset:0;pointer-events:none}
+
